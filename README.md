@@ -24,5 +24,5 @@ This is a collection of frontend code
 11. Progress Bar / Steps Indicator
 12. Testimonials
 13. Back to Top Button
-
+14. Timeline Journey
 
