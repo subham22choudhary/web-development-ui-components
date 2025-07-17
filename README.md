@@ -1,4 +1,4 @@
-# <a href="#">Frontend</a>
+# <a href="#">Frontend Components</a>
 This is a collection of frontend code
 
 #Mega Menu Navigation
