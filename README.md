@@ -10,19 +10,58 @@ This is a collection of frontend code
 
 
 
-**UI Components**
-1. Header - (Mega menu for Desktop) and (Hamburger Menu for Mobile)
-2. Footer
-3. Cards with CTA 
-4. FAQ Accordion
-5. Slider Carousal
-6. Modal / Popups
-7. Tabs
-8. Pagination and Infinite Scroll
-9. Breadcrumbs
-10. Countdown Timer
-11. Progress Bar / Steps Indicator
-12. Testimonials
-13. Back to Top Button
-14. Timeline Journey
+# 🚀 UI Components Library
+
+A modular and responsive collection of essential UI components built for scalable web applications. This library includes a wide range of reusable elements, ideal for modern websites and web apps.
+
+---
+
+## 📦 Components Included
+
+### 🧱 Layout & Navigation
+- Header - Mega Menu (Desktop) / Hamburger Menu (Mobile)
+- Footer
+- Breadcrumbs
+- Sticky Navigation / Sticky Elements
+- Back to Top Button
+
+### 🎛️ Content & Display
+- Cards with CTA
+- Timeline Journey
+- Testimonials
+- FAQ Accordion
+- Tabs
+- Slider Carousel
+- Video Player / Embedded Media
+- Countdown Timer
+- Progress Bar / Steps Indicator
+
+### 🧩 Interactions & Feedback
+- Modal / Popups
+- Notification Toasts / Alerts
+- Tooltip (optional addition)
+- Loading Spinners / Skeleton Loaders
+
+### 🔍 Utility Features
+- Search Bar with Autocomplete
+- Filters & Sort Options
+- Pagination and Infinite Scroll
+- Dark Mode Toggle
+- Language Selector / Region Selector
+- Map Integration
+- Tag / Chip Components
+- Social Share Buttons
+
+### 📝 Forms & User Input
+- Forms with Validation
+- Step-by-Step Wizards / Multi-Step Forms
+- Calendar / Date Picker
+- Ratings & Reviews
+- User Profile Dropdown / Avatar Menu
+
+---
+
+## 📁 Structure
+
+
 
