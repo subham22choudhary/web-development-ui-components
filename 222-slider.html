@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinite Loop Slider</title>
+    <style>
+        .sliderss {
+            display: grid;
+            justify-content: center;
+        }
+
+        .slides-parent {
+            margin: 2rem;
+            position: relative;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .slides-child {
+            display: none;
+            gap: 2rem;
+            padding-left: 4rem;
+            padding-right: 4rem;
+        }
+
+        .slides-child.active {
+            display: flex;
+        }
+
+        .slides-child>div {
+            flex: 1 1 50%;
+            /* har ek child 50% space le */
+            max-width: 50%;
+        }
+
+        /* Prev/Next Buttons */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            z-index: 2;
+            /* above slides */
+            border-radius: 6px;
+        }
+
+        .prev {
+            left: 8px;
+        }
+
+        .next {
+            right: 8px;
+        }
+
+        /* Pagination dots */
+        .dots {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin: 0 5px;
+            background-color: black;
+            /* black dots */
+            border-radius: 50%;
+            opacity: 0.3;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            opacity: 1;
+        }
+
+        /* Mobile: hide arrows, enable touch */
+        @media (max-width: 768px) {
+            .nav-btn {
+                display: none;
+            }
+
+            .slides-parent {
+                touch-action: pan-y;
+            }
+
+            .slides-child {
+                flex-direction: column;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .slides-child>div {
+                max-width: 100%;
+                /* mobile me full width */
+            }
+
+            /* allow vertical scroll */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sliderss">
+        <div class="slides-parent" id="slider">
+            <div class="slides-child active">
+                <div>Slide 1: Lorem ipsum dolor sit amet consectetur adipisicing elit. qwertyuiopasdfghjk</div>
+                <div>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</div>
+            </div>
+            <div class="slides-child">
+                <div>Slide 2: Lorem ipsum dolor sit amet consectetur adipisicing elit.dvfdfvdfv</div>
+                <div>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</div>
+            </div>
+            <div class="slides-child">
+                <div>Slide 3: Lorem ipsum dolor sit amet consectetur adipisicing elit.dwwwewefwf</div>
+                <div>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</div>
+            </div>
+            <div class="slides-child">
+                <div>Slide 4: Lorem ipsum dolor sit amet consectetur adipisicing elit.czcdsccwewe</div>
+                <div>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</div>
+            </div>
+            <div class="slides-child">
+                <div>Slide 5: Lorem ipsum dolor sit amet consectetur adipisicing elit.wefascscd</div>
+                <div>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</div>
+            </div>
+
+            <!-- Prev/Next Buttons (desktop) -->
+            <button class="nav-btn prev">&#10094;</button>
+            <button class="nav-btn next">&#10095;</button>
+        </div>
+    </div>
+
+    <!-- Pagination dots -->
+    <div class="dots"></div>
+
+    <script>
+        const slides = document.querySelectorAll(".slides-child");
+        const prevBtn = document.querySelector(".prev");
+        const nextBtn = document.querySelector(".next");
+        const dotsContainer = document.querySelector(".dots");
+        const slider = document.getElementById("slider");
+        let currentIndex = 0;
+        let autoSlide;
+
+        // create dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement("span");
+            dot.className = "dot" + (i === 0 ? " active" : "");
+            dot.addEventListener("click", () => {
+                currentIndex = i;
+                showSlide(currentIndex);
+                resetAutoSlide();
+            });
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll(".dot");
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+            dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        function startAutoSlide() {
+            autoSlide = setInterval(nextSlide, 3000);
+        }
+
+        function resetAutoSlide() {
+            clearInterval(autoSlide);
+            startAutoSlide();
+        }
+
+        // Desktop buttons
+        prevBtn.addEventListener("click", () => { prevSlide(); resetAutoSlide(); });
+        nextBtn.addEventListener("click", () => { nextSlide(); resetAutoSlide(); });
+
+        // ---------- Mobile-only drag/swipe (strictly below 768px) ----------
+        const mq = window.matchMedia("(max-width: 768px)");
+
+        let touchStartHandler, touchMoveHandler, touchEndHandler;
+        let startX = 0, deltaX = 0, isDragging = false;
+        const SWIPE_THRESHOLD = 50; // px
+
+        function addSwipe() {
+            if (touchStartHandler) return; // already added
+            touchStartHandler = (e) => {
+                const t = e.touches[0];
+                startX = t.clientX;
+                deltaX = 0;
+                isDragging = true;
+                clearInterval(autoSlide); // pause while dragging
+            };
+            touchMoveHandler = (e) => {
+                if (!isDragging) return;
+                const t = e.touches[0];
+                deltaX = t.clientX - startX;
+            };
+            touchEndHandler = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+                    if (deltaX < 0) nextSlide(); else prevSlide();
+                }
+                resetAutoSlide();
+            };
+
+            slider.addEventListener("touchstart", touchStartHandler, { passive: true });
+            slider.addEventListener("touchmove", touchMoveHandler, { passive: true });
+            slider.addEventListener("touchend", touchEndHandler);
+            slider.addEventListener("touchcancel", touchEndHandler);
+        }
+
+        function removeSwipe() {
+            if (!touchStartHandler) return; // not added
+            slider.removeEventListener("touchstart", touchStartHandler);
+            slider.removeEventListener("touchmove", touchMoveHandler);
+            slider.removeEventListener("touchend", touchEndHandler);
+            slider.removeEventListener("touchcancel", touchEndHandler);
+            touchStartHandler = touchMoveHandler = touchEndHandler = null;
+        }
+
+        function handleMQ(e) {
+            if (e.matches) addSwipe(); else removeSwipe();
+        }
+
+        // init based on current width
+        handleMQ(mq);
+        // update if viewport crosses breakpoint
+        if (mq.addEventListener) mq.addEventListener("change", handleMQ);
+        else mq.addListener(handleMQ); // older browsers
+
+        startAutoSlide();
+    </script>
+</body>
+
+</html>
